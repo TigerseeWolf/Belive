@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <author>一根下虎须</author>
+ <class>Blive_window</class>
+ <widget class="QMainWindow" name="Blive_window">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>586</width>
+    <height>462</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Blive - by：一根小虎须</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QWidget" name="layoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>11</x>
+      <y>11</y>
+      <width>563</width>
+      <height>403</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout_3">
+     <item row="0" column="1">
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <widget class="QLabel" name="label_head_pic">
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>150</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>150</width>
+           <height>150</height>
+          </size>
+         </property>
+         <property name="baseSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Box</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::AutoText</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="UpHeadText">
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>UP头像</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="0" column="0" rowspan="2">
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetMaximumSize</enum>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>UP主名字或UID：</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lineEdit_UP">
+             <property name="placeholderText">
+              <string/>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QLabel" name="RoomID">
+             <property name="layoutDirection">
+              <enum>Qt::LeftToRight</enum>
+             </property>
+             <property name="autoFillBackground">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>房间ID：</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lineEdit_room_id">
+             <property name="maximumSize">
+              <size>
+               <width>100</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="placeholderText">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="button_search">
+             <property name="statusTip">
+              <string>查询UP的信息</string>
+             </property>
+             <property name="text">
+              <string>查询</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="0" column="2">
+          <widget class="QPushButton" name="button_record">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="statusTip">
+            <string>点击录制视频/停止录制</string>
+           </property>
+           <property name="text">
+            <string>录制</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QPushButton" name="button_link">
+           <property name="statusTip">
+            <string>连接到直播间，会显示直播的信息</string>
+           </property>
+           <property name="text">
+            <string>连接</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QPushButton" name="button_stop">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="statusTip">
+            <string>停止并断开连接，注意关闭录制与观看直播</string>
+           </property>
+           <property name="text">
+            <string>断开连接</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="3">
+          <widget class="QPushButton" name="button_live">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="statusTip">
+            <string>使用默认视频播放器进行观看</string>
+           </property>
+           <property name="text">
+            <string>观看直播</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="4">
+          <widget class="QPushButton" name="button_open">
+           <property name="statusTip">
+            <string>设置录制视频存储的文件夹</string>
+           </property>
+           <property name="text">
+            <string>打开文件夹</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <widget class="QLabel" name="lable_live">
+           <property name="text">
+            <string>直播标题：</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="lable_live_title">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="button_clear">
+           <property name="text">
+            <string>清空消息</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QTextBrowser" name="textEdit_danmu">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="baseSize">
+          <size>
+           <width>63</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="1" column="1">
+      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0,0">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="QTextEdit" name="textEdit_send">
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>150</width>
+           <height>16777215</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_8">
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="button_send">
+           <property name="statusTip">
+            <string>发送消息到直播间</string>
+           </property>
+           <property name="text">
+            <string>发送</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_load">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>当前登录状态：</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_load_info">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>未登录</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>586</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuB">
+    <property name="title">
+     <string>设置</string>
+    </property>
+    <addaction name="actionLoad"/>
+    <addaction name="separator"/>
+    <addaction name="actionInit"/>
+    <addaction name="actionSetting"/>
+    <addaction name="actionSave"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>帮助</string>
+    </property>
+    <addaction name="actionShowHelp"/>
+    <addaction name="separator"/>
+    <addaction name="actionAbout"/>
+   </widget>
+   <addaction name="menuB"/>
+   <addaction name="menu"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionLoad">
+   <property name="text">
+    <string>Cookies登录</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>保存配置</string>
+   </property>
+  </action>
+  <action name="actionInit">
+   <property name="text">
+    <string>设置文件夹路径</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>退出</string>
+   </property>
+  </action>
+  <action name="actionShowHelp">
+   <property name="text">
+    <string>显示帮助</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>关于</string>
+   </property>
+  </action>
+  <action name="actionSetting">
+   <property name="text">
+    <string>设置画质</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
