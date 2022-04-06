@@ -70,7 +70,7 @@ https://space.bilibili.com/{self.mid}
             if self.mid == '':
                 return self.flag, self.image_url, self.mid, self.name, self.sex, self.sign, \
                  self.fans, self.attention, self.level
-        url = "https://api.bilibili.com/x/web-interface/card?mid=" + self.mid + "&jsonp=jsonp&article=true"
+        url = f"https://api.bilibili.com/x/web-interface/card?mid={self.mid}&jsonp=jsonp&article=true"
         html = self.get_html(url)  # 得到json
         value = json.loads(html)  # 加载json
         self.flag = True  # flag，判断是否有这个页面
@@ -89,24 +89,23 @@ https://space.bilibili.com/{self.mid}
 
     def get_bup_mid(self):
         """获取up的mid
-
         :return: mid_user_list:列表，存放所查到相关up的mid信息
         """
-        url = "https://search.bilibili.com/upuser?keyword=" + self.name
-        response = httpx.get(url=url, headers=self.headers, cookies=self.cookie)
-        time.sleep(0.1)
-        reg = r'"type":"bili_user","mid":(.*?),"uname'
-        mid_user_list = re.findall(reg, response.text)
-        if len(mid_user_list) > 0:
-            self.mid = mid_user_list[0]
+        # url = "https://search.bilibili.com/upuser?keyword=" + self.name
+        url = f"https://api.bilibili.com/x/web-interface/search/type?__refresh__=true&_extra=&context=&page=1&page_size=36&platform=pc&keyword={self.name}&search_type=bili_user"
+        response = httpx.get(url=url, headers=self.headers)
+        dict_res = json.loads(response.text)
+        user_list = dict_res['data']['result']
+        if len(user_list) > 0:
+            self.mid = user_list[0]['mid']
         else:
             self.mid = ''
-        return mid_user_list
+        return user_list
 
     def get_live_info(self):
-        """
-        得到页面信息
-        :return: UP直播间的数据字典  # 返回信息
+        """得到页面信息
+        :return: flag(有无该up), image_url, mid, name, sex, sign, \
+            self.fans, self.attention, self.level  # 返回信息
         """
         if self.mid == '':
             self.get_bup_mid()
