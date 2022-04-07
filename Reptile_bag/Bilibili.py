@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import os
+
 import httpx
 import json
 import time
@@ -95,12 +97,15 @@ https://space.bilibili.com/{self.mid}
         url = f"https://api.bilibili.com/x/web-interface/search/type?__refresh__=true&_extra=&context=&page=1&page_size=36&platform=pc&keyword={self.name}&search_type=bili_user"
         response = httpx.get(url=url, headers=self.headers)
         dict_res = json.loads(response.text)
-        user_list = dict_res['data']['result']
-        if len(user_list) > 0:
-            self.mid = user_list[0]['mid']
-        else:
-            self.mid = ''
-        return user_list
+        try:
+            user_list = dict_res['data']['result']
+            if len(user_list) > 0:
+                self.mid = user_list[0]['mid']
+            else:
+                self.mid = ''
+            return user_list
+        except:
+            return []
 
     def get_live_info(self):
         """得到页面信息
@@ -137,9 +142,10 @@ class BilibiliLive:
     def __init__(self, roomid='', name=''):
         self.roomid = roomid
         self.name = name
-        self.flag_live_stop = True
-        self.flag_record_stop = True
         self.cookies = {}
+        self.file_path = '.\\live_record'
+        self.flag_record = False
+        self.file_name = ''
 
     def get_html(self, url):
         """向网站发送请求，代码格式固定
@@ -200,7 +206,7 @@ class BilibiliLive:
         except:
             return 0
 
-    def flv_download(self, qn=10000, line=0, flag_record=0):
+    def get_download_url(self, qn=10000, line=0):
         '''
         执行视频录制，qn表示
         :param qn: 视频质量（原画、蓝光、高清……）的数字
@@ -211,14 +217,32 @@ class BilibiliLive:
         url = 'https://api.live.bilibili.com/room/v1/Room/playUrl?cid=' + self.roomid + '&' + 'qn=' + str(qn) +'&platform=web'
         html = self.get_html(url=url)
         value = json.loads(html)
-        flv_url = value['data']['durl'][line]['url']
+        self.flv_url = value['data']['durl'][line]['url']
         self.current_qn = value['data']['durl'][line]['url']
-        if flag_record == 0:
-            self.flag_record_stop = False
-        else:
-            self.flag_live_stop = False
-        with httpx.stream('GET', url=flv_url, headers=self.headers, cookies=self.cookies) as r:
-            yield r
+        return self.flv_url
+
+    def flv_download(self, qn=10000, line=0):
+        '''
+        执行视频录制，qn表示
+        :param qn: 视频质量（原画、蓝光、高清……）的数字
+        line: 0:主线路   1：备线1   2：备线2   3：备线3
+        :return:
+        '''
+        url = self.get_download_url(qn, line)
+        self.flag_record = True
+        if not os.path.exists(self.file_path):
+            os.mkdir('.\\live_record')  # 创建文件夹
+            self.file_path = '.\\live_record'
+
+        self.file_name = f'{self.live_up.roomid}_' + str(int(time.time())) + '.flv'
+        with open(self.file_path + '\\' + self.file_name, 'wb') as file:
+            with httpx.stream('GET', url=url, headers=self.headers, cookies=self.cookies) as r:
+                for data in r.iter_bytes():
+                    file.write(data)
+                    file.flush()
+                    if not self.flag_record:
+                        print('录制中止')
+                        return 0
 
     def _get_csrf(self):
         reg = 'bili_jct=(.*?);'

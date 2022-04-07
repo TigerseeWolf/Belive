@@ -1,8 +1,9 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
-# from PyQt5.QtCore import *
+from PyQt5.QtCore import *
 # from PyQt5.QtMultimedia import *
 # from PyQt5.QtMultimediaWidgets import QVideoWidget
+
 from gui.BliveWindow import Ui_Blive_window
 from gui.SettingWindow import Ui_Setting_window
 
@@ -56,7 +57,7 @@ class MyMainForm(QMainWindow, Ui_Blive_window):
         self.file_name = ''                 # 文件名字
         self.q_n = 0                        # 默认画质 数字越大，画质越好
         self.line_n = 0                     # 默认主线路
-        self.record_path = ''
+        self.record_path = os.getcwd() + '/live_record'
         # 载入数据
         self.load_init()
 
@@ -156,34 +157,25 @@ class MyMainForm(QMainWindow, Ui_Blive_window):
             self.flag_record = False
             self.button_record.setText('录制')
             self.button_record.setStyleSheet("")
-            self.live_up.flag_record_stop = 1
         else:
             if self.live_up.get_live_info().get('room_info').get('live_status') == 1:
                 self.button_record.setText('停止录制')
                 self.button_record.setStyleSheet("color: red")
-                self.live_up.flag_record_stop = 0
                 record_live_th = threading.Thread(target=self.record_live)
                 record_live_th.start()
-                self.flag_record = 1
+                self.flag_record = True
             else:
                 self.textEdit_danmu.append('未开播，无法录制！')
                 self.textEdit_danmu.moveCursor(QTextCursor.End)
 
     def button_live_down(self):
         if self.flag_live:
-            # self.live_room_window.show()
-            os.startfile(os.getcwd() + '/cache/' + f'{self.live_up.roomid}.flv')
+            self.live_now()
         else:
             if self.live_up.get_live_info().get('room_info').get('live_status') == 1:
-                # self.live_room_window.show()
                 self.button_live.setText('打开直播')
-                live_th = threading.Thread(target=self.live_now, name='直播线程')
-                live_th.start()
+                self.live_now()
                 self.flag_live = True
-                while 1:
-                    if os.path.isfile(os.getcwd() + '/cache/' + f'{self.live_up.roomid}.flv'):
-                        os.startfile(os.getcwd() + '/cache/' + f'{self.live_up.roomid}.flv')
-                        break
             else:
                 self.textEdit_danmu.append('未开播，无法观看！')
                 self.textEdit_danmu.moveCursor(QTextCursor.End)
@@ -193,6 +185,7 @@ class MyMainForm(QMainWindow, Ui_Blive_window):
             if not os.path.exists('./live_record'):
                 os.mkdir('./live_record')  # 创建文件夹
             self.record_path = '.\\live_record'
+            # QFileDialog.getOpenFileName(self.record_path)
             os.startfile(os.getcwd() + "\\live_record")
         else:
             if not os.path.exists('./live_record'):
@@ -252,46 +245,34 @@ class MyMainForm(QMainWindow, Ui_Blive_window):
             return -1
 
     def record_live(self):
-        generator = self.live_up.flv_download(self.q_n, self.line_n, 1)
+        url = self.live_up.get_download_url(self.q_n, self.line_n)
 
         if not os.path.exists(self.record_path):
             os.mkdir('.\\live_record')  # 创建文件夹
             self.record_path = '.\\live_record'
-
-        self.file_name = f'{self.live_up.roomid}_' + str(int(time.time())) + '.flv'
+        self.file_name = f'{self.live_up.name}_' + str(int(time.time())) + '.flv'
+        # response = requests.get(url, headers={'Referer': 'https://live.bilibili.com', }, stream=True, verify=False)
         with open(self.record_path + '\\' + self.file_name, 'wb') as file:
-            # 用一个生成器来迭代
-            for r in generator:
-                for data in r.iter_bytes():
-                    file.write(data)
-                    file.flush()
-                    if not self.flag_record:
-                        return 0
+            # for data in response.iter_content(chunk_size=1024):
+                # file.write(data)
+                # file.flush()
+            while True:
+                with httpx.stream('GET', url=url, headers=self.live_up.headers, cookies=self.live_up.cookies) as r:
+                    if r.status_code == 302:
+                        url = dict(r.headers.raw)[b'Location'].decode('UTF-8')
+                        continue
+                    else:
+                        for data in r.iter_bytes():
+                            file.write(data)
+                            file.flush()
+                            if not self.flag_record:
+                                print('录制中止')
+                                return 0
 
     def live_now(self):
-        # generator = self.live_up.flv_download(self.q_n, self.line_n, 0)
-        # player = QMediaPlayer()
-        # player.setVideoOutput(self.live_room_window.video_live)  # 视频播放输出的widget，就是上面定义的
-        # player.setMedia(QMediaContent(QFileDialog.getOpenFileUrl()[0]))  # 选取视频文件
-        # for r in generator:
-        #     player.play()  # 播放视频
-
-        # 放缓存区，不录制，完成直接删除
-        generator = self.live_up.flv_download(self.q_n, self.line_n, 0)
-        if not os.path.exists('./cache'):
-            os.mkdir('./cache')  # 创建
-        if os.path.isfile('./cache/' + f'{self.live_up.roomid}.flv'):
-            os.remove(f"./cache/{self.live_up.roomid}.flv")
-        with open('./cache/' + f'{self.live_up.roomid}.flv', 'wb') as file:
-            for r in generator:
-                for data in r.iter_bytes():
-                    file.write(data)
-                    file.flush()
-                    if not self.flag_live:
-                        break
-                if not self.flag_live:
-                    break
-        os.remove(f"./cache/{self.live_up.roomid}.flv")
+        self.live_up.get_download_url(self.q_n, self.line_n)     # 获取观看地址
+        self.thread_play = ThreadLivePlay(self.live_up.flv_url)
+        self.thread_play.start()
 
     def closeEvent(self, event):
         reply = QMessageBox.question(self, '询问',
@@ -400,7 +381,7 @@ class MyMainForm(QMainWindow, Ui_Blive_window):
 
     def about_browser(self):
         QMessageBox.information(self, "关于", "软件声明：\n"
-                                            "    本软件为免费软件，用户可以非商业性下载、安装及使用\n"
+                                            "    本软件为免费软件，使用开源FFplay播放，用户可以非商业性下载、安装及使用\n"
                                             "软件仅供学习参考，技术交流Q群：229893011")
 
     def setting_window_show(self):
@@ -430,6 +411,20 @@ class SettingWindow(QDialog, Ui_Setting_window):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
+
+
+class ThreadLivePlay(QThread):
+    """直播播放线程"""
+    signal_out = pyqtSignal(bool)
+
+    def __init__(self, url, parent=None):
+        super(ThreadLivePlay, self).__init__(parent)
+        self.url = url
+        self.working = True
+
+    def run(self):
+        os.system(f'ffplay "{self.url}"')
+        self.signal_out.emit(False)
 
 
 if __name__ == "__main__":
