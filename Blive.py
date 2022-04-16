@@ -41,6 +41,7 @@ class MyMainForm(QMainWindow, Ui_Blive_window):
         self.actionAbout.triggered.connect(self.about_browser)
         self.actionLoad.triggered.connect(self.log_in)
         self.actionSetting.triggered.connect(self.setting_window_show)
+        self.lineEdit_UP.returnPressed.connect(self.button_search_down)
         # 软件一些参数初始化载入
         self.blive_init()
 
