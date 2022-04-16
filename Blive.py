@@ -119,6 +119,7 @@ class MyMainForm(QMainWindow, Ui_Blive_window):
             self.button_live.setEnabled(True)
             self.button_record.setEnabled(True)
             self.lable_live_title.setText(dict_info['room_info']["title"])
+            self.live_up.title = dict_info['room_info']["title"]
             self.download_pic(dict_info['anchor_info']['base_info']['face'])
             # 说明图片位置，并导入图片到画布上
             up_head_pic = QImage('up_head_pic.gif')
@@ -272,7 +273,7 @@ class MyMainForm(QMainWindow, Ui_Blive_window):
 
     def live_now(self):
         self.live_up.get_download_url(self.q_n, self.line_n)     # 获取观看地址
-        self.thread_play = ThreadLivePlay(self.live_up.flv_url)
+        self.thread_play = ThreadLivePlay(self.live_up)
         self.thread_play.start()
 
     def closeEvent(self, event):
@@ -377,8 +378,11 @@ class MyMainForm(QMainWindow, Ui_Blive_window):
                                             "2.【断开连接】时注意【停止录制】与关闭直播间\n"
                                             "3.【录制】可以将直播间视频进行录制，可以在菜单栏设置中设置保存的文件夹位置\n"
                                             "4.【观看直播】可以打开直播间，进行观看\n"
-                                            "5. 弹幕【发送】需要使用【Cookies登录】，在设置->登录，输入Cookies值，如要退出则输入为空即可."
-                                            "按F12选择网络，登录B站后点击网络文件即可找到Cookies")
+                                            "5. 弹幕【发送】需要使用【Cookies登录】，在设置->登录，输入Cookies值，如要退出则输入为空即可。"
+                                            "按F12选择网络，登录B站后点击网络文件即可找到Cookies\n"
+                                            "6. 关于ffplay的使用：\n"
+                                            "【Q/Esc】：退出    【F】：全屏    【P/空格】：暂停\n"
+                                            "【M】：静音    【9/0】:音量增加/减少")
 
     def about_browser(self):
         QMessageBox.information(self, "关于", "软件声明：\n"
@@ -418,13 +422,14 @@ class ThreadLivePlay(QThread):
     """直播播放线程"""
     signal_out = pyqtSignal(bool)
 
-    def __init__(self, url, parent=None):
+    def __init__(self, live_up, parent=None):
         super(ThreadLivePlay, self).__init__(parent)
-        self.url = url
+        self.live_up = live_up
+        self.url = self.live_up.flv_url
         self.working = True
 
     def run(self):
-        os.system(f'ffplay "{self.url}"')
+        os.system(f'ffplay -x 800 -y 450 -window_title "{self.live_up.title}" "{self.url}"')
         self.signal_out.emit(False)
 
 
